@@ -2,7 +2,7 @@
 
 import { Fragment, useEffect, useMemo, useState } from "react"
 import { FileText, Inbox } from "lucide-react"
-import { PostList, type Tab } from "@/components/post-list"
+import { PostList } from "@/components/post-list"
 import { PostHeader, type Filter } from "@/components/post-header"
 import { CommentThread } from "@/components/comment-thread"
 import { InputBar, type ReplyContext } from "@/components/input-bar"
@@ -78,7 +78,6 @@ export default function Page() {
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null)
   const [selectedCommentId, setSelectedCommentId] = useState<string | null>(null)
   const [filter, setFilter] = useState<Filter>("all")
-  const [activeTab, setActiveTab] = useState<Tab>("all")
 
   // Esc deselects
   useEffect(() => {
@@ -114,8 +113,6 @@ export default function Page() {
       <NavRail />
       <div className="flex min-w-0 flex-1 overflow-hidden rounded-[10px] bg-card ring-1 ring-black/[0.05]">
         <PostList
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
           selectedPostId={selectedPostId}
           onSelectPost={setSelectedPostId}
           className="animate-panel-in"

@@ -1,25 +1,18 @@
 "use client"
 
-import { Facebook, Filter, Search, ChevronDown, MessageCircle } from "lucide-react"
+import {
+  Filter,
+  Search,
+  ChevronDown,
+  MessageCircle,
+  EyeOff,
+  Zap,
+  User,
+  UserPlus,
+} from "lucide-react"
 import { cn } from "@/lib/utils"
-import { posts, type PostListItem } from "@/lib/mock-data"
+import { posts, type PostListItem, type PostListPage } from "@/lib/mock-data"
 import { PostListEmpty } from "@/components/empty-states"
-
-export type Tab = "all" | "mine" | "mentions"
-
-const MINE_POST_IDS = new Set(["post-essential-tee", "post-winter-arrivals"])
-
-function filterPostsByTab(tab: Tab): PostListItem[] {
-  switch (tab) {
-    case "mine":
-      return posts.filter((p) => MINE_POST_IDS.has(p.id))
-    case "mentions":
-      return []
-    case "all":
-    default:
-      return posts
-  }
-}
 
 function PostThumb({ query, className }: { query: string; className?: string }) {
   return (
@@ -32,42 +25,49 @@ function PostThumb({ query, className }: { query: string; className?: string }) 
   )
 }
 
-function CommenterStack({ commenters }: { commenters: PostListItem["topCommenters"] }) {
-  if (commenters.length === 0) return null
+function PageAvatarBadge({ page }: { page: PostListPage }) {
   return (
-    <div className="flex -space-x-1.5">
-      {commenters.slice(0, 3).map((c, i) => (
-        <span
-          key={i}
-          className={cn(
-            "grid h-4 w-4 place-items-center rounded-full text-[8px] font-semibold ring-2 ring-card",
-            c.color,
-          )}
-        >
-          {c.initials}
-        </span>
-      ))}
-    </div>
+    <span
+      title={page.name}
+      className={cn(
+        "absolute -bottom-1 -right-1 grid h-[18px] w-[18px] place-items-center rounded-full text-[9px] font-bold uppercase tracking-tight ring-2 ring-card",
+        page.avatarColor,
+      )}
+    >
+      {page.pictureUrl ? (
+        <img src={page.pictureUrl} alt="" className="h-full w-full rounded-full object-cover" />
+      ) : (
+        page.initial
+      )}
+    </span>
   )
 }
 
+function statusTypeLabel(type: PostListItem["statusType"]): string {
+  switch (type) {
+    case "PHOTO":
+      return "Added a photo"
+    case "VIDEO":
+      return "Added a video"
+    case "STATUS":
+      return "Posted a status update"
+    case "LINK":
+      return "Shared a link"
+  }
+}
+
 export function PostList({
-  activeTab = "all",
-  onTabChange,
   selectedPostId = null,
   onSelectPost,
   className,
   style,
 }: {
-  activeTab?: Tab
-  onTabChange?: (tab: Tab) => void
   selectedPostId?: string | null
   onSelectPost?: (id: string) => void
   className?: string
   style?: React.CSSProperties
 }) {
-  const visiblePosts = filterPostsByTab(activeTab)
-  const mineCount = filterPostsByTab("mine").length
+  const visiblePosts = posts
 
   return (
     <aside
@@ -104,122 +104,119 @@ export function PostList({
         </div>
       </div>
 
-      {/* Tabs — scope of the list */}
-      <div className="flex items-center gap-0.5 px-2 pb-1">
-        <TabButton active={activeTab === "all"} onClick={() => onTabChange?.("all")}>
-          All
-          <Counter active={activeTab === "all"}>{posts.length}</Counter>
-        </TabButton>
-        <TabButton active={activeTab === "mine"} onClick={() => onTabChange?.("mine")}>
-          Mine
-          <Counter active={activeTab === "mine"}>{mineCount}</Counter>
-        </TabButton>
-        <TabButton active={activeTab === "mentions"} onClick={() => onTabChange?.("mentions")}>
-          Mentions
-        </TabButton>
-      </div>
-
       {visiblePosts.length === 0 ? (
-        <PostListEmpty tab={activeTab} />
+        <PostListEmpty />
       ) : (
-      <ul className="flex-1 space-y-0.5 overflow-y-auto px-2 pb-2">
-        {visiblePosts.map((post) => (
-          <li key={post.id}>
-            <button
-              type="button"
-              onClick={() => onSelectPost?.(post.id)}
-              className={cn(
-                "group flex w-full items-start gap-2.5 rounded-lg px-2.5 py-2.5 text-left transition-all duration-200",
-                selectedPostId === post.id
-                  ? "bg-primary/[0.06] ring-1 ring-primary/15"
-                  : "hover:bg-muted/40",
-              )}
-            >
-              {/* Post thumbnail */}
-              <div className="relative shrink-0">
-                <PostThumb query={post.thumbnailQuery} />
-                <span className="absolute -bottom-0.5 -right-0.5 grid h-3.5 w-3.5 place-items-center rounded-full bg-[#1877F2] ring-2 ring-card">
-                  <Facebook className="h-2 w-2 fill-white text-white" />
-                </span>
-              </div>
-
-              {/* Content */}
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1.5">
-                  <p className="truncate text-[12px] font-semibold text-foreground">
-                    {post.pageName}
-                  </p>
-                  <span className="ml-auto shrink-0 text-[11px] text-muted-foreground">
-                    {post.lastCommentAt}
-                  </span>
-                </div>
-                <p className="mt-0.5 truncate text-[12px] leading-snug text-muted-foreground">
-                  {post.snippet}
-                </p>
-                <div className="mt-1.5 flex items-center gap-2">
-                  {post.totalUnanswered > 0 ? (
-                    <span className="inline-flex items-center gap-1 text-[10px] font-medium text-amber-700">
-                      <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-                      {post.totalUnanswered} unanswered
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                      All answered
-                    </span>
+        <ul className="flex-1 space-y-0.5 overflow-y-auto px-2 pb-2 pt-1">
+          {visiblePosts.map((post) => {
+            const isSelected = selectedPostId === post.id
+            const secondaryLine = post.snippet?.trim()
+              ? post.snippet
+              : statusTypeLabel(post.statusType)
+            const isBoosted = post.promotionStatus === "active"
+            return (
+              <li key={post.id}>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => onSelectPost?.(post.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault()
+                      onSelectPost?.(post.id)
+                    }
+                  }}
+                  className={cn(
+                    "flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left outline-none transition-all duration-200 focus-visible:ring-1 focus-visible:ring-[#2563eb]/40",
+                    isSelected
+                      ? "bg-[#2563eb]/[0.06] ring-1 ring-[#2563eb]/20"
+                      : "hover:bg-muted/40",
                   )}
-                  <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground">
-                    <MessageCircle className="h-3 w-3" />
-                    {post.totalComments}
-                  </span>
-                  <div className="ml-auto">
-                    <CommenterStack commenters={post.topCommenters} />
+                >
+                  {/* Left column: thumbnail */}
+                  <div className="relative shrink-0">
+                    <PostThumb query={post.thumbnailQuery} />
+                    <PageAvatarBadge page={post.page} />
+                  </div>
+
+                  {/* Right column: text + stats */}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <p className="truncate text-[12px] font-semibold text-foreground">
+                        {post.pageName}
+                      </p>
+                      <span className="ml-auto shrink-0 text-[11px] text-muted-foreground">
+                        {post.lastCommentAt}
+                      </span>
+                    </div>
+
+                    <p
+                      className={cn(
+                        "mt-0.5 truncate text-[12px] leading-snug",
+                        post.snippet?.trim()
+                          ? "text-muted-foreground"
+                          : "italic text-muted-foreground/80",
+                      )}
+                    >
+                      {secondaryLine}
+                    </p>
+
+                    <div className="mt-1 flex items-center gap-2">
+                      <span className="inline-flex shrink-0 items-center gap-1 text-[10px] text-muted-foreground">
+                        <MessageCircle className="h-3 w-3" />
+                        {post.totalComments}
+                      </span>
+                      {post.totalHidden > 0 && (
+                        <span className="inline-flex shrink-0 items-center gap-1 text-[10px] text-muted-foreground">
+                          <EyeOff className="h-3 w-3" />
+                          {post.totalHidden}
+                        </span>
+                      )}
+
+                      <div className="ml-auto flex min-w-0 items-center gap-1.5">
+                        {isBoosted && (
+                          <span className="inline-flex min-w-0 items-center gap-1 rounded-full bg-violet-100 px-1.5 py-0.5 text-[10px] font-medium text-violet-700">
+                            <Zap className="h-2.5 w-2.5 shrink-0 fill-violet-700" />
+                            <span className="max-w-[72px] truncate">Boosted</span>
+                          </span>
+                        )}
+
+                        {post.assignee ? (
+                          <button
+                            type="button"
+                            onClick={(e) => e.stopPropagation()}
+                            aria-label={`Assigned to ${post.assignee.name}`}
+                            title={`Assigned to ${post.assignee.name}`}
+                            className="inline-flex min-w-0 items-center gap-1 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-foreground/80 transition-colors hover:bg-muted-foreground/20"
+                          >
+                            <User className="h-2.5 w-2.5 shrink-0" strokeWidth={2.25} />
+                            <span className="max-w-[72px] truncate">
+                              {post.assignee.isCurrentUser
+                                ? "You"
+                                : post.assignee.name.split(" ")[0]}
+                            </span>
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={(e) => e.stopPropagation()}
+                            aria-label="Assign"
+                            title="Assign"
+                            className="inline-flex shrink-0 items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                          >
+                            <UserPlus className="h-2.5 w-2.5 shrink-0" strokeWidth={2.25} />
+                            <span>Assign</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </button>
-          </li>
-        ))}
-      </ul>
+              </li>
+            )
+          })}
+        </ul>
       )}
     </aside>
-  )
-}
-
-function TabButton({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean
-  onClick?: () => void
-  children: React.ReactNode
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        "inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[12px] font-medium transition-colors duration-200",
-        active
-          ? "text-foreground"
-          : "text-muted-foreground hover:text-foreground",
-      )}
-    >
-      {children}
-    </button>
-  )
-}
-
-function Counter({ children, active }: { children: React.ReactNode; active?: boolean }) {
-  return (
-    <span
-      className={cn(
-        "text-[11px] font-semibold tabular-nums",
-        active ? "text-foreground" : "text-muted-foreground",
-      )}
-    >
-      {children}
-    </span>
   )
 }

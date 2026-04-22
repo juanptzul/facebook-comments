@@ -38,15 +38,29 @@ export type SubThread = {
   comments: Comment[]
 }
 
+export type PostListPage = {
+  name: string
+  initial: string
+  avatarColor: string
+  pictureUrl?: string
+}
+
+export type PostListAssignee = {
+  name: string
+  isCurrentUser?: boolean
+}
+
 export type PostListItem = {
   id: string
   pageName: string
+  page: PostListPage
   thumbnailQuery: string
-  snippet: string
+  snippet?: string
   postedAt: string
   statusType: "PHOTO" | "VIDEO" | "STATUS" | "LINK"
   isPublished: boolean
   permalinkUrl: string
+  promotionStatus: "active" | "inactive"
   lastCommentAt: string
   totalComments: number
   totalUnanswered: number
@@ -55,6 +69,7 @@ export type PostListItem = {
   totalHidden: number
   totalDeleted: number
   topCommenters: Array<{ initials: string; color: string }>
+  assignee?: PostListAssignee
   active?: boolean
 }
 
@@ -84,10 +99,24 @@ const COLORS = {
   page: "bg-primary text-primary-foreground",
 }
 
+const PAGES = {
+  northfield: {
+    name: "Northfield Supply Co.",
+    initial: "N",
+    avatarColor: "bg-[oklch(0.82_0.12_160)] text-[oklch(0.30_0.15_160)]",
+  },
+  wuphf: {
+    name: "WUPHF.com",
+    initial: "W",
+    avatarColor: "bg-[oklch(0.82_0.12_250)] text-[oklch(0.30_0.15_250)]",
+  },
+} satisfies Record<string, PostListPage>
+
 export const posts: PostListItem[] = [
   {
     id: "post-essential-tee",
     pageName: "Northfield Supply Co.",
+    page: PAGES.northfield,
     thumbnailQuery: "minimalist cotton tshirt flatlay neutral tones",
     snippet:
       "New drop is live. The Essential Tee in four new colors — cut from 240gsm organic cotton.",
@@ -95,6 +124,7 @@ export const posts: PostListItem[] = [
     statusType: "PHOTO",
     isPublished: true,
     permalinkUrl: "https://facebook.com/northfield/posts/essential-tee",
+    promotionStatus: "active",
     lastCommentAt: "4m",
     totalComments: 342,
     totalUnanswered: 3,
@@ -107,11 +137,13 @@ export const posts: PostListItem[] = [
       { initials: "MT", color: COLORS.michael },
       { initials: "PR", color: COLORS.priya },
     ],
+    assignee: { name: "Priya Raman" },
     active: true,
   },
   {
     id: "post-fall-lookbook",
     pageName: "Northfield Supply Co.",
+    page: PAGES.northfield,
     thumbnailQuery: "fall collection lookbook autumn editorial",
     snippet:
       "Fall lookbook is here — a study in layering, rust tones, and weight.",
@@ -119,6 +151,7 @@ export const posts: PostListItem[] = [
     statusType: "PHOTO",
     isPublished: true,
     permalinkUrl: "https://facebook.com/northfield/posts/fall-lookbook",
+    promotionStatus: "inactive",
     lastCommentAt: "1h",
     totalComments: 128,
     totalUnanswered: 1,
@@ -133,13 +166,14 @@ export const posts: PostListItem[] = [
   },
   {
     id: "post-winter-arrivals",
-    pageName: "Northfield Supply Co.",
+    pageName: "WUPHF.com",
+    page: PAGES.wuphf,
     thumbnailQuery: "winter jacket product photography snow",
-    snippet: "Winter arrivals — insulated outerwear, built for the long walk home.",
     postedAt: "4 days ago",
     statusType: "VIDEO",
     isPublished: true,
     permalinkUrl: "https://facebook.com/northfield/posts/winter-arrivals",
+    promotionStatus: "inactive",
     lastCommentAt: "3h",
     totalComments: 64,
     totalUnanswered: 2,

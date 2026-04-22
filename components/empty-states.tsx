@@ -1,6 +1,4 @@
-import { AtSign, Inbox, UserRound } from "lucide-react"
-
-type Tab = "all" | "mine" | "mentions"
+import { Inbox } from "lucide-react"
 
 export function CenterEmpty() {
   return (
@@ -97,33 +95,15 @@ function PostBubblesIllustration() {
   )
 }
 
-export function PostListEmpty({ tab }: { tab: Tab }) {
-  const content = {
-    all: {
-      Icon: Inbox,
-      title: "No posts yet",
-      subtitle: "New posts with comments will appear here.",
-    },
-    mine: {
-      Icon: UserRound,
-      title: "No assigned posts",
-      subtitle: "Posts with comments assigned to you will show up here.",
-    },
-    mentions: {
-      Icon: AtSign,
-      title: "No mentions",
-      subtitle: "When your page is mentioned in a comment, it'll appear here.",
-    },
-  }[tab]
-  const { Icon, title, subtitle } = content
+export function PostListEmpty() {
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-6 pb-8 text-center">
       <div className="grid h-14 w-14 place-items-center rounded-full bg-slate-100">
-        <Icon className="h-6 w-6 text-slate-400" strokeWidth={1.75} />
+        <Inbox className="h-6 w-6 text-slate-400" strokeWidth={1.75} />
       </div>
-      <h3 className="mt-4 text-[13px] font-semibold text-foreground">{title}</h3>
+      <h3 className="mt-4 text-[13px] font-semibold text-foreground">No posts yet</h3>
       <p className="mt-1 max-w-[220px] text-[12px] leading-snug text-muted-foreground">
-        {subtitle}
+        New posts with comments will appear here.
       </p>
     </div>
   )
