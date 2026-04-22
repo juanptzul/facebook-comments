@@ -218,7 +218,7 @@ function SendButton({ canSend }: { canSend: boolean }) {
       className={cn(
         "grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground transition-all",
         canSend
-          ? "shadow-[0_2px_8px_-2px_rgba(37,99,235,0.4)] hover:brightness-110"
+          ? "shadow-[0_2px_8px_-2px_rgba(0,71,255,0.4)] hover:brightness-110"
           : "cursor-not-allowed opacity-40",
       )}
     >

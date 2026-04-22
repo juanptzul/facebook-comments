@@ -18,7 +18,7 @@ function NavRail() {
   ]
   return (
     <nav
-      className="animate-panel-in flex h-full w-14 shrink-0 flex-col overflow-hidden rounded-2xl bg-card py-3 ring-1 ring-black/[0.05]"
+      className="animate-panel-in flex h-full w-14 shrink-0 flex-col overflow-hidden rounded-[10px] bg-card py-3 ring-1 ring-black/[0.05]"
       style={{ animationDelay: "0ms" }}
     >
       <ul className="flex w-full flex-col items-stretch gap-1 px-2">
@@ -112,7 +112,7 @@ export default function Page() {
   return (
     <main className="bg-shell flex h-svh w-full gap-3 overflow-hidden p-3 text-foreground">
       <NavRail />
-      <div className="flex min-w-0 flex-1 overflow-hidden rounded-2xl bg-card ring-1 ring-black/[0.05]">
+      <div className="flex min-w-0 flex-1 overflow-hidden rounded-[10px] bg-card ring-1 ring-black/[0.05]">
         <PostList
           activeTab={activeTab}
           onTabChange={setActiveTab}
@@ -127,7 +127,7 @@ export default function Page() {
         >
           {selectedPostId ? (
             <div className="min-h-0 flex-1 overflow-hidden p-3">
-              <div className="flex h-full flex-col gap-3 overflow-hidden rounded-xl bg-[#F0F2F7] p-3 ring-1 ring-black/[0.05]">
+              <div className="flex h-full flex-col gap-3 overflow-hidden rounded-[10px] bg-[#F0F2F7] p-3 ring-1 ring-black/[0.05]">
                 <PostHeader filter={filter} setFilter={setFilter} />
                 <CommentThread
                   filter={filter}
