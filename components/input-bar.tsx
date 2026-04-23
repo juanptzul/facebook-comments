@@ -21,7 +21,6 @@ type Mode = "public" | "private"
 export type ReplyContext = {
   commentId: string
   name: string
-  snippet: string
   direction: "in" | "out"
   canReplyPrivately: boolean
 }
