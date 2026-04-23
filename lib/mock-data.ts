@@ -11,17 +11,16 @@ export type Comment = {
   id: string
   direction: CommentDirection
   authorName: string
-  authorHandle?: string
   authorInitials: string
   authorColor: string
   text: string
   timestamp: string
-  likeCount?: number
   hidden?: boolean
   canReplyPrivately?: boolean
+  canHide?: boolean
+  canRemove?: boolean
   reactions?: Reaction[]
   totalReactions?: number
-  replyTo?: string
   mentions?: string[]
 }
 
@@ -269,13 +268,11 @@ export const subThreads: SubThread[] = [
         id: "sarah-1",
         direction: "in",
         authorName: "Sarah Chen",
-        authorHandle: "@sarah.chen.98",
         authorInitials: "SC",
         authorColor: COLORS.sarah,
         text:
           "Is this available in sizes larger than XL? I've been looking everywhere for a brand that actually goes up to 3XL in this fit — your stuff is the only thing that's caught my eye in months.",
         timestamp: "4m ago",
-        likeCount: 3,
         canReplyPrivately: true,
         reactions: [
           { emoji: "❤️", label: "Love", count: 4 },
@@ -290,21 +287,17 @@ export const subThreads: SubThread[] = [
         text:
           "@Sarah Chen Hi Sarah! Our Essential Tee runs up to XXL right now, and we're adding 3XL to the next production run in May. I'll DM you when pre-orders open.",
         timestamp: "2m ago",
-        likeCount: 2,
         mentions: ["Sarah Chen"],
-        replyTo: "Sarah Chen",
       },
       {
         id: "sarah-followup",
         direction: "in",
         authorName: "Sarah Chen",
-        authorHandle: "@sarah.chen.98",
         authorInitials: "SC",
         authorColor: COLORS.sarah,
         text:
           "amazing, thank you! one more q — any plans for the crew neck in heather grey? that's the colorway I've been hoping for 🤞",
         timestamp: "Just now",
-        likeCount: 0,
       },
     ],
   },
@@ -321,13 +314,11 @@ export const subThreads: SubThread[] = [
         id: "alex-1",
         direction: "in",
         authorName: "Alex Rivera",
-        authorHandle: "@alex.rivera",
         authorInitials: "AR",
         authorColor: COLORS.alex,
         text:
           "Do you ship internationally? I'm in Madrid and would love to get my hands on this.",
         timestamp: "12m ago",
-        likeCount: 2,
         canReplyPrivately: true,
       },
       {
@@ -337,20 +328,16 @@ export const subThreads: SubThread[] = [
         text:
           "@Alex Rivera Hi Alex! We currently ship to US and Canada only, but international is on our Q3 roadmap.",
         timestamp: "10m ago",
-        likeCount: 1,
         mentions: ["Alex Rivera"],
-        replyTo: "Alex Rivera",
       },
       {
         id: "alex-2",
         direction: "in",
         authorName: "Alex Rivera",
-        authorHandle: "@alex.rivera",
         authorInitials: "AR",
         authorColor: COLORS.alex,
         text: "Any way I can get notified when you launch in Europe?",
         timestamp: "8m ago",
-        likeCount: 0,
       },
       {
         id: "alex-reply-2",
@@ -359,19 +346,16 @@ export const subThreads: SubThread[] = [
         text:
           "Absolutely — drop your email at northfield.co/notify-eu and we'll ping you first.",
         timestamp: "6m ago",
-        likeCount: 1,
       },
       {
         id: "alex-3",
         direction: "in",
         authorName: "Alex Rivera",
-        authorHandle: "@alex.rivera",
         authorInitials: "AR",
         authorColor: COLORS.alex,
         text:
           "Just signed up, thanks! One more thing — do you offer tax-inclusive pricing when you launch?",
         timestamp: "4m ago",
-        likeCount: 0,
       },
     ],
   },
@@ -392,7 +376,6 @@ export const subThreads: SubThread[] = [
         authorColor: COLORS.michael,
         text: "Just got mine today, the quality is incredible — thank you!",
         timestamp: "22m ago",
-        likeCount: 8,
         canReplyPrivately: true,
         reactions: [{ emoji: "❤️", label: "Love", count: 3 }],
         totalReactions: 3,
@@ -403,9 +386,7 @@ export const subThreads: SubThread[] = [
         ...PAGE_AUTHOR,
         text: "@Michael Torres Thanks so much, Michael — glad it landed well!",
         timestamp: "18m ago",
-        likeCount: 1,
         mentions: ["Michael Torres"],
-        replyTo: "Michael Torres",
       },
     ],
   },
@@ -425,7 +406,6 @@ export const subThreads: SubThread[] = [
         authorColor: COLORS.jessica,
         text: "this is obvious scam don't buy from them they never ship",
         timestamp: "1h ago",
-        likeCount: 0,
         hidden: true,
         canReplyPrivately: false,
       },
@@ -448,7 +428,6 @@ export const subThreads: SubThread[] = [
         authorColor: COLORS.david,
         text: "Do you ship to Canada? Couldn't find shipping info on the site.",
         timestamp: "3h ago",
-        likeCount: 1,
         canReplyPrivately: true,
       },
     ],
@@ -470,7 +449,6 @@ export const subThreads: SubThread[] = [
         text:
           "Wore mine on a 10-hour flight, zero wrinkles. Sold on the fabric 🙌",
         timestamp: "6h ago",
-        likeCount: 12,
         canReplyPrivately: true,
         reactions: [
           { emoji: "❤️", label: "Love", count: 5 },
@@ -485,9 +463,7 @@ export const subThreads: SubThread[] = [
         text:
           "@Priya Raman That's the dream use case — thank you for sharing, Priya!",
         timestamp: "5h ago",
-        likeCount: 2,
         mentions: ["Priya Raman"],
-        replyTo: "Priya Raman",
       },
     ],
   },

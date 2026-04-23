@@ -238,24 +238,28 @@ export function CommentBubble({
                   selected && "opacity-100",
                 )}
               >
-                <ActionButton
-                  label={hidden ? "Unhide" : "Hide from public"}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setHidden((h) => !h)
-                  }}
-                >
-                  {hidden ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
-                </ActionButton>
-                <ActionButton
-                  label="Delete"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setShowDeleteConfirm(true)
-                  }}
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                </ActionButton>
+                {comment.canHide !== false && (
+                  <ActionButton
+                    label={hidden ? "Unhide" : "Hide from public"}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setHidden((h) => !h)
+                    }}
+                  >
+                    {hidden ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
+                  </ActionButton>
+                )}
+                {comment.canRemove !== false && (
+                  <ActionButton
+                    label="Delete"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setShowDeleteConfirm(true)
+                    }}
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </ActionButton>
+                )}
                 {!isOut && (
                   <ActionButton
                     label={liked ? "Unlike" : "Like"}
