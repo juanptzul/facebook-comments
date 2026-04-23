@@ -121,7 +121,11 @@ function EmptyState({ filter }: { filter: Filter }) {
       </div>
       <p className="text-[13px] font-medium text-foreground">Nothing matches this filter</p>
       <p className="max-w-xs text-[12px]">
-        No commenters in <span className="font-medium">{filter}</span> state on this post.
+        No commenters in{" "}
+        <span className="font-medium">
+          {filter === "unanswered" ? "Unanswered" : filter === "answered" ? "Answered" : "All"}
+        </span>{" "}
+        state on this post.
       </p>
     </div>
   )

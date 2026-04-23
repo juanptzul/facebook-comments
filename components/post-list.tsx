@@ -63,12 +63,12 @@ function statusTypeLabel(type: PostListItem["statusType"]): string {
 }
 
 type Filters = {
-  estado: "todos" | "con-pendientes" | "sin-pendientes"
-  tipo: "todos" | "PHOTO" | "VIDEO" | "STATUS" | "LINK"
-  boost: "todos" | "boosted" | "organico"
+  state: "all" | "has-pending" | "no-pending"
+  type: "all" | "PHOTO" | "VIDEO" | "STATUS" | "LINK"
+  boost: "all" | "boosted" | "organic"
 }
 
-const DEFAULT_FILTERS: Filters = { estado: "todos", tipo: "todos", boost: "todos" }
+const DEFAULT_FILTERS: Filters = { state: "all", type: "all", boost: "all" }
 
 
 function FilterOption({
@@ -157,14 +157,14 @@ export function PostList({
   }, [filterOpen])
 
   const hasActiveFilters =
-    filters.estado !== "todos" || filters.tipo !== "todos" || filters.boost !== "todos"
+    filters.state !== "all" || filters.type !== "all" || filters.boost !== "all"
 
   const visiblePosts = posts.filter((post) => {
-    if (filters.estado === "con-pendientes" && post.totalUnanswered === 0) return false
-    if (filters.estado === "sin-pendientes" && post.totalUnanswered > 0) return false
-    if (filters.tipo !== "todos" && post.statusType !== filters.tipo) return false
+    if (filters.state === "has-pending" && post.totalUnanswered === 0) return false
+    if (filters.state === "no-pending" && post.totalUnanswered > 0) return false
+    if (filters.type !== "all" && post.statusType !== filters.type) return false
     if (filters.boost === "boosted" && post.promotionStatus !== "active") return false
-    if (filters.boost === "organico" && post.promotionStatus === "active") return false
+    if (filters.boost === "organic" && post.promotionStatus === "active") return false
     if (search.trim()) {
       const q = search.toLowerCase()
       const matchesName = post.pageName.toLowerCase().includes(q)
@@ -220,11 +220,11 @@ export function PostList({
               <div className="absolute right-0 top-8 z-50 w-56 overflow-hidden rounded-xl border border-border bg-card shadow-lg">
                 {/* Popover header */}
                 <div className="flex items-center justify-between px-3 py-2.5">
-                  <span className="text-[13px] font-semibold text-foreground">Filtrar</span>
+                  <span className="text-[13px] font-semibold text-foreground">Filter</span>
                   <button
                     type="button"
                     onClick={() => setFilters(DEFAULT_FILTERS)}
-                    title="Limpiar filtros"
+                    title="Clear filters"
                     disabled={!hasActiveFilters}
                     className={cn(
                       "grid h-6 w-6 place-items-center rounded-md transition-colors",
@@ -238,27 +238,27 @@ export function PostList({
                 </div>
 
                 <div className="border-t border-border pt-2">
-                  <FilterSection title="Estado">
-                    <FilterOption label="Todos" icon={<Layers className={ICON_SIZE} />}checked={filters.estado === "todos"} onSelect={() => setFilter("estado", "todos")} />
-                    <FilterOption label="Con pendientes" icon={<Clock className={ICON_SIZE} />} checked={filters.estado === "con-pendientes"} onSelect={() => setFilter("estado", "con-pendientes")} />
-                    <FilterOption label="Sin pendientes" icon={<CheckCircle2 className={ICON_SIZE} />} checked={filters.estado === "sin-pendientes"} onSelect={() => setFilter("estado", "sin-pendientes")} />
+                  <FilterSection title="State">
+                    <FilterOption label="All" icon={<Layers className={ICON_SIZE} />} checked={filters.state === "all"} onSelect={() => setFilter("state", "all")} />
+                    <FilterOption label="Has pending" icon={<Clock className={ICON_SIZE} />} checked={filters.state === "has-pending"} onSelect={() => setFilter("state", "has-pending")} />
+                    <FilterOption label="No pending" icon={<CheckCircle2 className={ICON_SIZE} />} checked={filters.state === "no-pending"} onSelect={() => setFilter("state", "no-pending")} />
                   </FilterSection>
 
                   <div className="border-t border-border pt-2">
-                    <FilterSection title="Tipo de post">
-                      <FilterOption label="Todos" icon={<Layers className={ICON_SIZE} />} checked={filters.tipo === "todos"} onSelect={() => setFilter("tipo", "todos")} />
-                      <FilterOption label="Foto" icon={<ImageIcon className={ICON_SIZE} />} checked={filters.tipo === "PHOTO"} onSelect={() => setFilter("tipo", "PHOTO")} />
-                      <FilterOption label="Video" icon={<VideoIcon className={ICON_SIZE} />} checked={filters.tipo === "VIDEO"} onSelect={() => setFilter("tipo", "VIDEO")} />
-                      <FilterOption label="Status" icon={<FileText className={ICON_SIZE} />} checked={filters.tipo === "STATUS"} onSelect={() => setFilter("tipo", "STATUS")} />
-                      <FilterOption label="Link" icon={<Link2 className={ICON_SIZE} />} checked={filters.tipo === "LINK"} onSelect={() => setFilter("tipo", "LINK")} />
+                    <FilterSection title="Post type">
+                      <FilterOption label="All" icon={<Layers className={ICON_SIZE} />} checked={filters.type === "all"} onSelect={() => setFilter("type", "all")} />
+                      <FilterOption label="Photo" icon={<ImageIcon className={ICON_SIZE} />} checked={filters.type === "PHOTO"} onSelect={() => setFilter("type", "PHOTO")} />
+                      <FilterOption label="Video" icon={<VideoIcon className={ICON_SIZE} />} checked={filters.type === "VIDEO"} onSelect={() => setFilter("type", "VIDEO")} />
+                      <FilterOption label="Status" icon={<FileText className={ICON_SIZE} />} checked={filters.type === "STATUS"} onSelect={() => setFilter("type", "STATUS")} />
+                      <FilterOption label="Link" icon={<Link2 className={ICON_SIZE} />} checked={filters.type === "LINK"} onSelect={() => setFilter("type", "LINK")} />
                     </FilterSection>
                   </div>
 
                   <div className="border-t border-border pt-2">
                     <FilterSection title="Boost">
-                      <FilterOption label="Todos" icon={<Layers className={ICON_SIZE} />} checked={filters.boost === "todos"} onSelect={() => setFilter("boost", "todos")} />
-                      <FilterOption label="Solo boosted" icon={<Zap className={ICON_SIZE} />} checked={filters.boost === "boosted"} onSelect={() => setFilter("boost", "boosted")} />
-                      <FilterOption label="Orgánico" icon={<Leaf className={ICON_SIZE} />} checked={filters.boost === "organico"} onSelect={() => setFilter("boost", "organico")} />
+                      <FilterOption label="All" icon={<Layers className={ICON_SIZE} />} checked={filters.boost === "all"} onSelect={() => setFilter("boost", "all")} />
+                      <FilterOption label="Boosted only" icon={<Zap className={ICON_SIZE} />} checked={filters.boost === "boosted"} onSelect={() => setFilter("boost", "boosted")} />
+                      <FilterOption label="Organic" icon={<Leaf className={ICON_SIZE} />} checked={filters.boost === "organic"} onSelect={() => setFilter("boost", "organic")} />
                     </FilterSection>
                   </div>
                 </div>
@@ -276,7 +276,7 @@ export function PostList({
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar posts..."
+            placeholder="Search posts..."
             className="flex-1 bg-transparent text-[12px] text-foreground placeholder:text-muted-foreground focus:outline-none"
           />
           {search && (

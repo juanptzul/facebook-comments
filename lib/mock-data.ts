@@ -28,13 +28,11 @@ export type Comment = {
 export type SubThread = {
   id: string
   commenterName: string
-  commenterHandle?: string
   commenterInitials: string
   commenterColor: string
   state: ThreadState
   assignedTo?: string
   lastActivity: string
-  unreadCount?: number
   comments: Comment[]
 }
 
@@ -261,13 +259,11 @@ export const subThreads: SubThread[] = [
   {
     id: "sub-sarah",
     commenterName: "Sarah Chen",
-    commenterHandle: "@sarah.chen.98",
     commenterInitials: "SC",
     commenterColor: COLORS.sarah,
     state: "open",
     assignedTo: "Priya",
     lastActivity: "4m",
-    unreadCount: 1,
     comments: [
       {
         id: "sarah-1",
@@ -315,7 +311,6 @@ export const subThreads: SubThread[] = [
   {
     id: "sub-alex",
     commenterName: "Alex Rivera",
-    commenterHandle: "@alex.rivera",
     commenterInitials: "AR",
     commenterColor: COLORS.alex,
     state: "open",
@@ -383,7 +378,6 @@ export const subThreads: SubThread[] = [
   {
     id: "sub-michael",
     commenterName: "Michael Torres",
-    commenterHandle: "@mike.torres",
     commenterInitials: "MT",
     commenterColor: COLORS.michael,
     state: "closed",
@@ -422,7 +416,6 @@ export const subThreads: SubThread[] = [
     commenterColor: COLORS.jessica,
     state: "open",
     lastActivity: "1h",
-    unreadCount: 1,
     comments: [
       {
         id: "jessica-1",
@@ -446,7 +439,6 @@ export const subThreads: SubThread[] = [
     state: "open",
     assignedTo: "Priya",
     lastActivity: "3h",
-    unreadCount: 1,
     comments: [
       {
         id: "david-1",

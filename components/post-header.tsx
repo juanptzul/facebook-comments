@@ -3,13 +3,15 @@
 import { useEffect, useRef, useState } from "react"
 import {
   ArrowUpRight,
+  CheckCircle2,
   ChevronDown,
+  Clock,
   EyeOff,
   Facebook,
-  Globe,
+  Filter,
+  Layers,
   Lock,
   MessageCircle,
-  MoreHorizontal,
   Reply,
   ThumbsUp,
   Trash2,
@@ -111,13 +113,6 @@ export function PostHeader({ filter, setFilter }: Props) {
           </a>
           <button
             type="button"
-            aria-label="More actions"
-            className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
-          >
-            <MoreHorizontal className="h-4 w-4" />
-          </button>
-          <button
-            type="button"
             onClick={() => setCollapsed((c) => !c)}
             aria-label={collapsed ? "Expand post details" : "Collapse post details"}
             aria-expanded={!collapsed}
@@ -193,56 +188,64 @@ export function PostHeader({ filter, setFilter }: Props) {
           <button
             type="button"
             onClick={() => setFilterOpen((o) => !o)}
-            className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-[12px] font-medium text-foreground hover:bg-muted"
-            aria-haspopup="menu"
-            aria-expanded={filterOpen}
+            className={cn(
+              "inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-medium transition-colors",
+              filterOpen || filter !== "all"
+                ? "text-[#2563eb] hover:bg-[#2563eb]/10"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground",
+            )}
           >
-            <Globe className="h-3.5 w-3.5 text-muted-foreground" />
-            <FilterLabel value={filter} />
-            <ChevronDown className="h-3 w-3 text-muted-foreground" />
+            <Filter className="h-3 w-3" />
+            {filter === "all" ? "All" : filter === "unanswered" ? "Unanswered" : "Answered"}
+            <ChevronDown className="h-3 w-3" />
           </button>
+
           {filterOpen && (
-            <div
-              className="absolute right-0 z-10 mt-1 w-44 overflow-hidden rounded-md border border-border bg-popover shadow-lg"
-              role="menu"
-            >
-              <FilterOption
-                value="unanswered"
-                current={filter}
-                onSelect={(v) => {
-                  setFilter(v)
-                  setFilterOpen(false)
-                }}
-              >
-                Unanswered
-                <CountChip color="amber">
-                  {subThreads.filter((t) => t.state === "open").length}
-                </CountChip>
-              </FilterOption>
-              <FilterOption
-                value="answered"
-                current={filter}
-                onSelect={(v) => {
-                  setFilter(v)
-                  setFilterOpen(false)
-                }}
-              >
-                Answered
-                <CountChip color="emerald">
-                  {subThreads.filter((t) => t.state === "closed").length}
-                </CountChip>
-              </FilterOption>
-              <FilterOption
-                value="all"
-                current={filter}
-                onSelect={(v) => {
-                  setFilter(v)
-                  setFilterOpen(false)
-                }}
-              >
-                All
-                <CountChip color="muted">{subThreads.length}</CountChip>
-              </FilterOption>
+            <div className="absolute right-0 top-8 z-50 w-48 overflow-hidden rounded-xl border border-border bg-card shadow-lg">
+              <div className="px-2 py-2">
+                <p className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+                  State
+                </p>
+                {(["all", "unanswered", "answered"] as Filter[]).map((v) => {
+                  const checked = filter === v
+                  const icon =
+                    v === "all" ? <Layers className="h-3.5 w-3.5" /> :
+                    v === "unanswered" ? <Clock className="h-3.5 w-3.5" /> :
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                  const label =
+                    v === "all" ? "All" :
+                    v === "unanswered" ? "Unanswered" :
+                    "Answered"
+                  return (
+                    <button
+                      key={v}
+                      type="button"
+                      onClick={() => { setFilter(v); setFilterOpen(false) }}
+                      className={cn(
+                        "flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left transition-colors",
+                        checked ? "bg-[#2563eb]/[0.07]" : "hover:bg-muted",
+                      )}
+                    >
+                      <span className={cn(
+                        "flex h-4 w-4 shrink-0 items-center justify-center rounded border",
+                        checked ? "border-[#2563eb] bg-[#2563eb]" : "border-muted-foreground/30 bg-background",
+                      )}>
+                        {checked && (
+                          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                            <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        )}
+                      </span>
+                      <span className={cn("shrink-0", checked ? "text-[#2563eb]" : "text-muted-foreground")}>
+                        {icon}
+                      </span>
+                      <span className={cn("flex-1 text-[12px]", checked ? "font-semibold text-[#2563eb]" : "text-foreground")}>
+                        {label}
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
             </div>
           )}
         </div>
@@ -277,55 +280,3 @@ function Stat({
   )
 }
 
-function FilterLabel({ value }: { value: Filter }) {
-  if (value === "unanswered") return <>Unanswered</>
-  if (value === "answered") return <>Answered</>
-  return <>All</>
-}
-
-function FilterOption({
-  value,
-  current,
-  onSelect,
-  children,
-}: {
-  value: Filter
-  current: Filter
-  onSelect: (v: Filter) => void
-  children: React.ReactNode
-}) {
-  return (
-    <button
-      type="button"
-      onClick={() => onSelect(value)}
-      className={cn(
-        "flex w-full items-center gap-2 px-3 py-2 text-left text-[12px] transition-colors",
-        current === value ? "bg-muted text-foreground" : "text-foreground hover:bg-muted",
-      )}
-      role="menuitem"
-    >
-      {children}
-    </button>
-  )
-}
-
-function CountChip({
-  children,
-  color,
-}: {
-  children: React.ReactNode
-  color: "amber" | "emerald" | "muted"
-}) {
-  return (
-    <span
-      className={cn(
-        "ml-auto rounded px-1.5 py-0.5 text-[10px] font-semibold",
-        color === "amber" && "bg-amber-500/10 text-amber-700",
-        color === "emerald" && "bg-emerald-500/10 text-emerald-700",
-        color === "muted" && "bg-muted text-muted-foreground",
-      )}
-    >
-      {children}
-    </span>
-  )
-}
