@@ -87,6 +87,7 @@ export function CommentBubble({
   const isOut = comment.direction === "out"
   const [liked, setLiked] = useState(false)
   const [hidden, setHidden] = useState(!!comment.hidden)
+  const [expanded, setExpanded] = useState(!comment.hidden)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(deleteConfirm)
 
   const handleBubbleClick = () => onSelect?.()
@@ -115,8 +116,24 @@ export function CommentBubble({
           {comment.authorInitials}
         </div>
 
-        {/* Bubble card */}
-        <div className="flex min-w-0 max-w-[min(640px,85%)] flex-1 flex-col">
+        {/* Collapsed hidden state */}
+        {hidden && !expanded ? (
+          <div className="flex max-w-[min(640px,85%)] flex-1 items-center gap-2 rounded-lg border border-dashed border-muted-foreground/25 bg-muted/40 px-3 py-2">
+            <EyeOff className="h-3.5 w-3.5 shrink-0 text-muted-foreground/60" />
+            <span className="flex-1 text-[12px] text-muted-foreground">
+              <span className="font-medium text-foreground/70">{comment.authorName}</span>
+              {" · "}Hidden from public
+            </span>
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); setExpanded(true) }}
+              className="shrink-0 rounded px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+            >
+              Show
+            </button>
+          </div>
+        ) : (
+          <div className="flex min-w-0 max-w-[min(640px,85%)] flex-1 flex-col">
           <div
             className={cn(
               "relative rounded-lg border px-3 py-2 transition-all",
@@ -125,7 +142,6 @@ export function CommentBubble({
                 : isOut
                   ? "border-transparent bg-blue-100 group-hover/bubble:brightness-[0.98]"
                   : "border-transparent bg-card group-hover/bubble:brightness-[0.99]",
-              hidden && "opacity-60",
             )}
           >
             {/* Selected indicator */}
@@ -133,14 +149,6 @@ export function CommentBubble({
               <div className="absolute -top-2.5 left-3 inline-flex items-center gap-1 rounded-full bg-primary px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-primary-foreground">
                 <CornerUpLeft className="h-2.5 w-2.5" />
                 Replying
-              </div>
-            )}
-
-            {/* Hidden overlay badge */}
-            {hidden && (
-              <div className="mb-1.5 flex items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-                <EyeOff className="h-3 w-3" />
-                Hidden from public
               </div>
             )}
 
@@ -233,9 +241,11 @@ export function CommentBubble({
               <div
                 onClick={stopPropagation}
                 className={cn(
-                  "ml-auto flex items-center gap-0.5 rounded-md border border-border bg-card p-0.5 opacity-0 shadow-sm transition-opacity",
-                  "group-hover/bubble:opacity-100 focus-within:opacity-100",
-                  selected && "opacity-100",
+                  "ml-auto flex items-center gap-0.5 rounded-md border p-0.5",
+                  "invisible border-transparent bg-transparent shadow-none",
+                  "group-hover/bubble:visible group-hover/bubble:border-border group-hover/bubble:bg-card group-hover/bubble:shadow-sm",
+                  "focus-within:visible focus-within:border-border focus-within:bg-card focus-within:shadow-sm",
+                  selected && "visible border-border bg-card shadow-sm",
                 )}
               >
                 {comment.canHide !== false && (
@@ -243,7 +253,12 @@ export function CommentBubble({
                     label={hidden ? "Unhide" : "Hide from public"}
                     onClick={(e) => {
                       e.stopPropagation()
-                      setHidden((h) => !h)
+                      if (!hidden) {
+                        setHidden(true)
+                        setExpanded(false)
+                      } else {
+                        setHidden(false)
+                      }
                     }}
                   >
                     {hidden ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
@@ -300,9 +315,19 @@ export function CommentBubble({
               </div>
             )}
           </div>
-        </div>
-      </div>
 
+          {hidden && expanded && (
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); setExpanded(false) }}
+              className="mt-0.5 px-1 text-[11px] text-muted-foreground/50 hover:text-muted-foreground"
+            >
+              ↑ Collapse
+            </button>
+          )}
+        </div>
+        )}
+      </div>
     </div>
   )
 }

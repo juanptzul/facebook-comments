@@ -59,8 +59,6 @@ function SubThreadGroup({
     <section className="flex flex-col gap-2.5">
       {/* Group anchor — subtle sub-heading above the thread */}
       <div className="flex items-center gap-1.5 pl-[42px] text-[10.5px] font-medium text-muted-foreground">
-        <span className="font-medium text-foreground/80">{thread.commenterName}</span>
-        <span className="text-muted-foreground/50">·</span>
         <span
           className={cn(
             "inline-flex items-center gap-1",
